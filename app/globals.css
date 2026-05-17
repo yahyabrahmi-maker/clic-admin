@@ -1,26 +1,40 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --cobalt: #1B1FB8;
+  --gold: #E8C547;
+  --void: #06081F;
+  --night: #0B0E2A;
+  --elevated: #11163A;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--void);
+  color: #F8F7F2;
+  font-family: ui-sans-serif, system-ui, sans-serif;
 }
+
+input, textarea, select {
+  background: var(--night);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  color: #F8F7F2;
+  width: 100%;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--gold); }
+label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.1em; color: #C9CCDD; margin-bottom: 0.4rem; display: block; }
+
+.btn { padding: 0.7rem 1.3rem; border-radius: 999px; font-weight: 500; font-size: 0.92rem; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+.btn-primary { background: var(--gold); color: var(--void); }
+.btn-primary:hover { opacity: 0.9; }
+.btn-ghost { border: 1px solid rgba(255,255,255,0.15); color: #F8F7F2; background: transparent; }
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+.btn-danger { background: #ff5555; color: white; }
+
+.card { background: var(--elevated); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 1.5rem; }
