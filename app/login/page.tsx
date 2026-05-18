@@ -8,7 +8,6 @@ export default function LoginRedirect() {
 
   useEffect(() => {
     (async () => {
-      // Force sign out, then send to login page
       await supabase.auth.signOut();
       router.replace('/');
     })();
