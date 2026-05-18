@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Trash2, Plus, Users } from 'lucide-react';
+import { Trash2, Plus, Users, Pencil } from 'lucide-react';
 import Modal from '@/components/Modal';
 import Toast from '@/components/Toast';
 
@@ -52,27 +52,31 @@ export default function ClientsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="page-header">
         <div>
-          <h1 className="text-3xl font-semibold">Clients</h1>
-          <p className="text-slate-400 text-sm mt-1">{rows.length} {rows.length === 1 ? 'client' : 'clients'} listed</p>
+          <h1 className="page-title">Clients</h1>
+          <p className="page-subtitle">{rows.length} {rows.length === 1 ? 'client' : 'clients'} in the logo strip</p>
         </div>
         <button onClick={() => setEditing({ ...blank })} className="btn btn-primary"><Plus size={16} /> Add client</button>
       </div>
 
       <div className="space-y-2">
         {rows.map(c => (
-          <div key={c.id} className="card row-card flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              {c.logo_url ? <img src={c.logo_url} alt="" className="w-12 h-12 object-contain" /> : <div className="w-12 h-12 rounded-lg bg-white/5 flex items-center justify-center text-sm italic font-serif" style={{ color: 'var(--gold)' }}>{c.mark}</div>}
-              <div>
-                <div className="font-medium">{c.name}</div>
-                <div className="text-xs text-slate-400">{c.mark}</div>
+          <div key={c.id} className="row-card">
+            <div className="row-content">
+              {c.logo_url ? (
+                <div className="row-logo"><img src={c.logo_url} alt="" /></div>
+              ) : (
+                <div className="row-logo" style={{ color: 'var(--gold)', fontFamily: 'serif', fontStyle: 'italic', fontWeight: 600 }}>{c.mark}</div>
+              )}
+              <div className="row-info">
+                <div className="row-title">{c.name}</div>
+                <div className="row-meta">Mark: {c.mark} · Sort: {c.sort_order}</div>
               </div>
             </div>
-            <div className="flex gap-2">
-              <button onClick={() => setEditing(c)} className="btn btn-ghost text-sm">Edit</button>
-              <button onClick={() => remove(c.id!)} className="btn btn-danger text-sm"><Trash2 size={14} /></button>
+            <div className="row-actions">
+              <button onClick={() => setEditing(c)} className="btn-icon btn-icon-ghost" aria-label="Edit"><Pencil size={14} /></button>
+              <button onClick={() => remove(c.id!)} className="btn-icon btn-icon-danger" aria-label="Delete"><Trash2 size={14} /></button>
             </div>
           </div>
         ))}
@@ -99,7 +103,7 @@ export default function ClientsPage() {
               <input value={editing.name} onChange={e => setEditing({ ...editing, name: e.target.value })} placeholder="Carthage Land" />
             </div>
             <div className="field-group">
-              <label>Mark (2-3 letters)</label>
+              <label>Mark (2–3 letters)</label>
               <input value={editing.mark} onChange={e => setEditing({ ...editing, mark: e.target.value })} maxLength={3} placeholder="CL" />
               <p className="field-help">Used as fallback if there's no logo image.</p>
             </div>
@@ -108,8 +112,8 @@ export default function ClientsPage() {
               <input type="file" accept="image/*" onChange={e => e.target.files?.[0] && uploadLogo(e.target.files[0])} />
               {uploading && <p className="field-help">Uploading…</p>}
               {editing.logo_url && (
-                <div className="mt-3 p-3 rounded-lg bg-white/5 flex items-center gap-3">
-                  <img src={editing.logo_url} alt="" className="h-12 w-12 object-contain" />
+                <div className="mt-3 p-3 rounded-lg flex items-center gap-3" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                  <div className="row-logo"><img src={editing.logo_url} alt="" /></div>
                   <button onClick={() => setEditing({ ...editing, logo_url: undefined })} className="text-xs text-slate-400 hover:text-red-400">Remove logo</button>
                 </div>
               )}

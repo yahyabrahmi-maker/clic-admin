@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Trash2, Plus, Star, FolderKanban } from 'lucide-react';
+import { Trash2, Plus, Star, FolderKanban, Pencil } from 'lucide-react';
 import Modal from '@/components/Modal';
 import Toast from '@/components/Toast';
 
@@ -54,29 +54,34 @@ export default function ProjectsPage() {
     setUploading(false);
   }
 
+  const featuredCount = rows.filter(p => p.is_featured).length;
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="page-header">
         <div>
-          <h1 className="text-3xl font-semibold">Projects</h1>
-          <p className="text-slate-400 text-sm mt-1">{rows.length} {rows.length === 1 ? 'project' : 'projects'} · {rows.filter(p => p.is_featured).length} featured</p>
+          <h1 className="page-title">Projects</h1>
+          <p className="page-subtitle">{rows.length} {rows.length === 1 ? 'project' : 'projects'} · {featuredCount} featured</p>
         </div>
         <button onClick={() => setEditing({ ...blank })} className="btn btn-primary"><Plus size={16} /> Add project</button>
       </div>
 
       <div className="space-y-2">
         {rows.map(p => (
-          <div key={p.id} className="card row-card flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg flex items-center justify-center font-semibold flex-shrink-0" style={{ background: p.gradient, fontStyle: 'italic', fontFamily: 'serif' }}>{p.mark}</div>
-              <div>
-                <div className="font-medium flex items-center gap-2">{p.client} {p.is_featured && <Star size={12} fill="currentColor" style={{ color: 'var(--gold)' }} />}</div>
-                <div className="text-xs text-slate-400">{p.category} · {p.year}</div>
+          <div key={p.id} className="row-card">
+            <div className="row-content">
+              <div className="monogram-badge" style={{ background: p.gradient }}>{p.mark}</div>
+              <div className="row-info">
+                <div className="row-title">
+                  {p.client}
+                  {p.is_featured && <Star size={13} fill="currentColor" style={{ color: 'var(--gold)' }} />}
+                </div>
+                <div className="row-meta">{p.category} · {p.year}</div>
               </div>
             </div>
-            <div className="flex gap-2">
-              <button onClick={() => setEditing(p)} className="btn btn-ghost text-sm">Edit</button>
-              <button onClick={() => remove(p.id!)} className="btn btn-danger text-sm"><Trash2 size={14} /></button>
+            <div className="row-actions">
+              <button onClick={() => setEditing(p)} className="btn-icon btn-icon-ghost" aria-label="Edit"><Pencil size={14} /></button>
+              <button onClick={() => remove(p.id!)} className="btn-icon btn-icon-danger" aria-label="Delete"><Trash2 size={14} /></button>
             </div>
           </div>
         ))}
@@ -125,23 +130,23 @@ export default function ProjectsPage() {
             <div className="field-group">
               <label>Gradient CSS</label>
               <input value={editing.gradient} onChange={e => setEditing({ ...editing, gradient: e.target.value })} />
-              <div className="mt-2 h-10 rounded-lg" style={{ background: editing.gradient }} />
-              <p className="field-help">Preview shown above. Copy from existing projects for consistency.</p>
+              <div className="mt-2 h-12 rounded-lg" style={{ background: editing.gradient }} />
+              <p className="field-help">Preview shown above.</p>
             </div>
             <div className="field-group">
               <label>Project image</label>
               <input type="file" accept="image/*" onChange={e => e.target.files?.[0] && uploadImage(e.target.files[0])} />
               {uploading && <p className="field-help">Uploading…</p>}
               {editing.image_url && (
-                <div className="mt-3 p-3 rounded-lg bg-white/5 flex items-center gap-3">
-                  <img src={editing.image_url} alt="" className="h-16 rounded" />
+                <div className="mt-3 p-3 rounded-lg flex items-center gap-3" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                  <img src={editing.image_url} alt="" className="h-16 w-24 object-cover rounded" />
                   <button onClick={() => setEditing({ ...editing, image_url: undefined })} className="text-xs text-slate-400 hover:text-red-400">Remove image</button>
                 </div>
               )}
             </div>
             <div className="field-group">
               <label className="flex items-center gap-2 cursor-pointer" style={{ textTransform: 'none', letterSpacing: 'normal', color: '#F8F7F2', fontSize: '0.95rem' }}>
-                <input type="checkbox" checked={editing.is_featured} onChange={e => setEditing({ ...editing, is_featured: e.target.checked })} className="w-auto" style={{ width: 'auto' }} />
+                <input type="checkbox" checked={editing.is_featured} onChange={e => setEditing({ ...editing, is_featured: e.target.checked })} style={{ width: 'auto' }} />
                 <Star size={14} style={{ color: 'var(--gold)' }} /> Show as featured project
               </label>
               <p className="field-help">The featured project appears in the large hero card on your site.</p>

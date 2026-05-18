@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Trash2, Plus, Briefcase } from 'lucide-react';
+import { Trash2, Plus, Briefcase, Pencil } from 'lucide-react';
 import Modal from '@/components/Modal';
 import Toast from '@/components/Toast';
 
@@ -40,27 +40,27 @@ export default function ServicesPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="page-header">
         <div>
-          <h1 className="text-3xl font-semibold">Services</h1>
-          <p className="text-slate-400 text-sm mt-1">{rows.length} {rows.length === 1 ? 'service' : 'services'} offered</p>
+          <h1 className="page-title">Services</h1>
+          <p className="page-subtitle">{rows.length} {rows.length === 1 ? 'service' : 'services'} offered</p>
         </div>
         <button onClick={() => setEditing({ ...blank })} className="btn btn-primary"><Plus size={16} /> Add service</button>
       </div>
 
       <div className="space-y-2">
         {rows.map(s => (
-          <div key={s.id} className="card row-card flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="text-sm font-mono w-10 flex-shrink-0" style={{ color: 'var(--gold)' }}>{s.number}</div>
-              <div>
-                <div className="font-medium">{s.title}</div>
-                <div className="text-xs text-slate-400">{s.tagline}</div>
+          <div key={s.id} className="row-card">
+            <div className="row-content">
+              <div className="monogram-badge" style={{ background: 'rgba(232, 197, 71, 0.1)', color: 'var(--gold)', fontFamily: 'monospace', fontStyle: 'normal', fontSize: '0.85rem' }}>{s.number}</div>
+              <div className="row-info">
+                <div className="row-title">{s.title}</div>
+                <div className="row-meta">{s.tagline}</div>
               </div>
             </div>
-            <div className="flex gap-2">
-              <button onClick={() => setEditing(s)} className="btn btn-ghost text-sm">Edit</button>
-              <button onClick={() => remove(s.id!)} className="btn btn-danger text-sm"><Trash2 size={14} /></button>
+            <div className="row-actions">
+              <button onClick={() => setEditing(s)} className="btn-icon btn-icon-ghost" aria-label="Edit"><Pencil size={14} /></button>
+              <button onClick={() => remove(s.id!)} className="btn-icon btn-icon-danger" aria-label="Delete"><Trash2 size={14} /></button>
             </div>
           </div>
         ))}
@@ -104,11 +104,11 @@ export default function ServicesPage() {
             <div className="field-group">
               <label>Tags</label>
               <input value={editing.tags.join(', ')} onChange={e => setEditing({ ...editing, tags: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })} placeholder="Reels, Calendar, Copy" />
-              <p className="field-help">Comma-separated. These appear as pills on the service card.</p>
+              <p className="field-help">Comma-separated.</p>
             </div>
             <div className="field-group">
               <label>Bullets</label>
-              <textarea rows={5} value={editing.bullets.join('\n')} onChange={e => setEditing({ ...editing, bullets: e.target.value.split('\n').filter(Boolean) })} placeholder="Monthly editorial calendar&#10;Daily community management&#10;Native short-form for TikTok…" />
+              <textarea rows={5} value={editing.bullets.join('\n')} onChange={e => setEditing({ ...editing, bullets: e.target.value.split('\n').filter(Boolean) })} placeholder="One per line…" />
               <p className="field-help">One bullet per line.</p>
             </div>
             <div className="field-group">
